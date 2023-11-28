@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+namespace Hirokinoue\AstVisualizer;
+
+use RuntimeException;
+
+if (count($argv) !== 2) {
+    fwrite(STDERR,
+        'Usage: ast-visualizer <target php file>' . PHP_EOL .
+        'Options can be specified using config.php, config.php.dist or config.dist.php.' . PHP_EOL
+    );
+    exit(1);
+}
+
+foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $autoload) {
+    if (file_exists($autoload)) {
+        require $autoload;
+        break;
+    }
+}
+
+$currentWorkingDirectory = getcwd();
+if ($currentWorkingDirectory === false) {
+    throw new RuntimeException('Cannot get current working directory.');
+}
+define("WORKING_DIR", $currentWorkingDirectory);
+
+$targetPhpFile = $argv[1];
+if (!file_exists($targetPhpFile)) {
+    fwrite(STDERR, sprintf('File not found: %s.', $targetPhpFile) . PHP_EOL);
+    exit(1);
+}
+
+$code = file_get_contents($targetPhpFile);
+if ($code === false) {
+    fwrite(STDERR, sprintf('Cannot get contents: %s.', $targetPhpFile) . PHP_EOL);
+    exit(1);
+}
+
+$ok = (new AstVisualizer())->analyze($code);
+
+if ($ok) {
+    fwrite(STDOUT, sprintf('Analysis finished: %s', $targetPhpFile) . PHP_EOL);
+    exit(0);
+}
+
+exit(1);
+

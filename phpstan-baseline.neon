@@ -1,0 +1,11 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Cannot use array destructuring on array\\<int, array\\<PhpParser\\\\Node\\>\\|int\\>\\|null\\.$#"
+			count: 1
+			path: src/Traverser/DrawingTraverser.php
+
+		-
+			message: "#^Property Hirokinoue\\\\AstVisualizer\\\\Traverser\\\\DrawingTraverser\\:\\:\\$visitors \\(array\\<int, PhpParser\\\\NodeVisitor\\>\\) does not accept array\\<int\\|string, PhpParser\\\\NodeVisitor\\>\\.$#"
+			count: 1
+			path: src/Traverser/DrawingTraverser.php
