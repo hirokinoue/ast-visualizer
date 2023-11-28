@@ -1,0 +1,21 @@
+{
+    "name": "hirokinoue/ast-visualizer",
+    "description": "Visualize AST.",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Hirokinoue\\AstVisualizer\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "nikic/php-parser": "^5.0@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5",
+        "phpstan/phpstan": "^1.10"
+    },
+    "bin": [
+        "bin/ast-visualizer"
+    ]
+}
