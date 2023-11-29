@@ -17,17 +17,18 @@ class DiagramCreator extends NodeVisitorAbstract
 
     public function beforeTraverse(array $nodes)
     {
+        fwrite(STDOUT, '@startuml' . PHP_EOL);
+        fwrite(STDOUT, 'Class Root' . PHP_EOL);
         return $nodes;
     }
 
     public function afterTraverse(array $nodes)
     {
+        fwrite(STDOUT, '@enduml' . PHP_EOL);
         return $nodes;
     }
 
     public function enterNode(Node $node) {
-        fwrite(STDOUT, str_repeat('_', ($this->layer - 1) * 2) . $this->srcNode->getType() . PHP_EOL);
-        fwrite(STDOUT, str_repeat('_', ($this->layer - 1) * 2) . $node->getType() . PHP_EOL);
         return $node;
     }
 
