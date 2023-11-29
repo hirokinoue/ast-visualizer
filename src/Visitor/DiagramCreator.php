@@ -27,7 +27,7 @@ class DiagramCreator extends NodeVisitorAbstract
     public function beforeTraverse(array $nodes)
     {
         fwrite(STDOUT, '@startuml' . PHP_EOL);
-        fwrite(STDOUT, 'Class Root' . PHP_EOL);
+        fwrite(STDOUT, 'Object Root' . PHP_EOL);
         return $nodes;
     }
 
@@ -39,8 +39,9 @@ class DiagramCreator extends NodeVisitorAbstract
 
     public function enterNode(Node $node) {
         $this->cache($node);
-        $this->drawClass($node);
+        $this->drawObject($node);
         $this->drawDependency($node);
+        $this->drawClass($node);
         return $node;
     }
 
@@ -63,17 +64,29 @@ class DiagramCreator extends NodeVisitorAbstract
         }
     }
 
+    private function drawObject(Node $node): void
+    {
+        $objName = $this->resolveName($node);
+        fwrite(STDOUT,
+            'Object ' . $this->suffixedNodeType($node) . PHP_EOL .
+            ($objName === '' ? '' : ($this->suffixedNodeType($node) . ' : ' . $objName . PHP_EOL))
+        );
+    }
+
     private function drawClass(Node $node): void
     {
+        if (array_key_exists($node->getType(), $this->drawnNodes) && $this->drawnNodes[$node->getType()] > 1) {
+            return;
+        }
         $reflectionClass = new ReflectionClass($node);
         $reflectionMethods = $reflectionClass->getMethods();
 
         fwrite(STDOUT,
-            $this->declareType($reflectionClass) . ' ' . $this->suffixedName($node) . $this->annotation($node) . PHP_EOL .
+            $this->declareType($reflectionClass) . ' ' . $node->getType() . PHP_EOL .
             '{' . PHP_EOL .
             implode(PHP_EOL , array_map(fn (ReflectionMethod $reflectionMethod) =>
-                $this->resolveVisibility($reflectionMethod) . $reflectionMethod->getName() . '()' . ': ' . $reflectionMethod->getReturnType()
-                , $reflectionMethods)
+                    $this->resolveVisibility($reflectionMethod) . $reflectionMethod->getName() . '()' . ': ' . $reflectionMethod->getReturnType()
+                    , $reflectionMethods)
             ) . PHP_EOL .
             '}' . PHP_EOL);
     }
@@ -95,17 +108,17 @@ class DiagramCreator extends NodeVisitorAbstract
         return 'class';
     }
 
-    private function suffixedName(Node $node): string
+    private function suffixedNodeType(Node $node): string
     {
         $count = array_key_exists($node->getType(), $this->drawnNodes) ? $this->drawnNodes[$node->getType()] : 1;
-        return $node->getType() . ($count === 1 ? '' : (string)$count);
+        return $node->getType() === 'Root' ? 'Root' : $node->getType() . '__' . $count;
     }
 
-    private function annotation(Node $node): string
-    {
-        $name = $this->resolveName($node);
-        return $name === '' ? '' : ' <<' . $name . '>> ';
-    }
+//    private function annotation(Node $node): string
+//    {
+//        $name = $this->resolveName($node);
+//        return $name === '' ? '' : ' <<' . $name . '>> ';
+//    }
 
     private function resolveName(Node $node): string
     {
@@ -120,7 +133,7 @@ class DiagramCreator extends NodeVisitorAbstract
 
     private function drawDependency(Node $node): void
     {
-        fwrite(STDOUT, $this->suffixedName($this->srcNode) . '-->' . $this->suffixedName($node) . PHP_EOL);
+        fwrite(STDOUT, $this->suffixedNodeType($this->srcNode) . '-->' . $this->suffixedNodeType($node) . PHP_EOL);
     }
 
     private function resolveVisibility(ReflectionMethod $reflectionMethod): string
