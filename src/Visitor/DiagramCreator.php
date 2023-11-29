@@ -3,6 +3,8 @@
 namespace Hirokinoue\AstVisualizer\Visitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\NodeVisitorAbstract;
 
 class DiagramCreator extends NodeVisitorAbstract
@@ -60,7 +62,7 @@ class DiagramCreator extends NodeVisitorAbstract
 
     private function drawClass(Node $node): void
     {
-        fwrite(STDOUT, 'class ' . $this->suffixedType($node) . PHP_EOL .
+        fwrite(STDOUT, 'class ' . $this->suffixedType($node) . $this->annotation($node) . PHP_EOL .
             '{' . PHP_EOL .
             '}' . PHP_EOL);
     }
@@ -69,5 +71,22 @@ class DiagramCreator extends NodeVisitorAbstract
     {
         $count = array_key_exists($node->getType(), $this->drawnNodes) ? $this->drawnNodes[$node->getType()] : 1;
         return $node->getType() . ($count === 1 ? '' : (string)$count);
+    }
+
+    private function annotation(Node $node): string
+    {
+        $name = $this->resolveName($node);
+        return $name === '' ? '' : ' <<' . $name . '>> ';
+    }
+
+    private function resolveName(Node $node): string
+    {
+        if ($node instanceof Identifier) {
+            return $node->name;
+        }
+        if ($node instanceof Name) {
+            return $node->getLast();
+        }
+        return '';
     }
 }
