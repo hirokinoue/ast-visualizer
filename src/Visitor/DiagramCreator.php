@@ -35,6 +35,7 @@ class DiagramCreator extends NodeVisitorAbstract
 
     public function enterNode(Node $node) {
         $this->cache($node);
+        $this->drawClass($node);
         return $node;
     }
 
@@ -55,5 +56,18 @@ class DiagramCreator extends NodeVisitorAbstract
         } else {
             $this->drawnNodes[$node->getType()] = 1;
         }
+    }
+
+    private function drawClass(Node $node): void
+    {
+        fwrite(STDOUT, 'class ' . $this->suffixedType($node) . PHP_EOL .
+            '{' . PHP_EOL .
+            '}' . PHP_EOL);
+    }
+
+    private function suffixedType(Node $node): string
+    {
+        $count = array_key_exists($node->getType(), $this->drawnNodes) ? $this->drawnNodes[$node->getType()] : 1;
+        return $node->getType() . ($count === 1 ? '' : (string)$count);
     }
 }
