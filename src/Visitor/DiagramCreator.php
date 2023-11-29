@@ -38,6 +38,7 @@ class DiagramCreator extends NodeVisitorAbstract
     public function enterNode(Node $node) {
         $this->cache($node);
         $this->drawClass($node);
+        $this->drawDependency($node);
         return $node;
     }
 
@@ -88,5 +89,10 @@ class DiagramCreator extends NodeVisitorAbstract
             return $node->getLast();
         }
         return '';
+    }
+
+    private function drawDependency(Node $node): void
+    {
+        fwrite(STDOUT, $this->suffixedType($this->srcNode) . '-->' . $this->suffixedType($node) . PHP_EOL);
     }
 }
