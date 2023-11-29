@@ -11,6 +11,11 @@ class DiagramCreator extends NodeVisitorAbstract
 
     private int $layer;
 
+    /**
+     * @var array<string, int>
+     */
+    private array $drawnNodes = [];
+
     public function __construct()
     {
     }
@@ -29,6 +34,7 @@ class DiagramCreator extends NodeVisitorAbstract
     }
 
     public function enterNode(Node $node) {
+        $this->cache($node);
         return $node;
     }
 
@@ -40,5 +46,14 @@ class DiagramCreator extends NodeVisitorAbstract
     public function setSrcNode(Node $srcNode): void
     {
         $this->srcNode = $srcNode;
+    }
+
+    private function cache(Node $node): void
+    {
+        if (array_key_exists($node->getType(), $this->drawnNodes)) {
+            $this->drawnNodes[$node->getType()]++;
+        } else {
+            $this->drawnNodes[$node->getType()] = 1;
+        }
     }
 }
