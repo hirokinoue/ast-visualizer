@@ -6,6 +6,8 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\NodeVisitorAbstract;
+use ReflectionClass;
+use ReflectionMethod;
 
 class DiagramCreator extends NodeVisitorAbstract
 {
@@ -63,12 +65,37 @@ class DiagramCreator extends NodeVisitorAbstract
 
     private function drawClass(Node $node): void
     {
-        fwrite(STDOUT, 'class ' . $this->suffixedType($node) . $this->annotation($node) . PHP_EOL .
+        $reflectionClass = new ReflectionClass($node);
+        $reflectionMethods = $reflectionClass->getMethods();
+
+        fwrite(STDOUT,
+            $this->declareType($reflectionClass) . ' ' . $this->suffixedName($node) . $this->annotation($node) . PHP_EOL .
             '{' . PHP_EOL .
+            implode(PHP_EOL , array_map(fn (ReflectionMethod $reflectionMethod) =>
+                $this->resolveVisibility($reflectionMethod) . $reflectionMethod->getName() . '()' . ': ' . $reflectionMethod->getReturnType()
+                , $reflectionMethods)
+            ) . PHP_EOL .
             '}' . PHP_EOL);
     }
 
-    private function suffixedType(Node $node): string
+    private function declareType(ReflectionClass $reflectionClass): string
+    {
+        if ($reflectionClass->isInterface()) {
+            return 'interface';
+        }
+        if ($reflectionClass->isTrait()) {
+            return 'trait';
+        }
+        if ($reflectionClass->isAbstract()) {
+            return 'abstract class';
+        }
+        if ($reflectionClass->isEnum()) {
+            return 'enum';
+        }
+        return 'class';
+    }
+
+    private function suffixedName(Node $node): string
     {
         $count = array_key_exists($node->getType(), $this->drawnNodes) ? $this->drawnNodes[$node->getType()] : 1;
         return $node->getType() . ($count === 1 ? '' : (string)$count);
@@ -93,6 +120,20 @@ class DiagramCreator extends NodeVisitorAbstract
 
     private function drawDependency(Node $node): void
     {
-        fwrite(STDOUT, $this->suffixedType($this->srcNode) . '-->' . $this->suffixedType($node) . PHP_EOL);
+        fwrite(STDOUT, $this->suffixedName($this->srcNode) . '-->' . $this->suffixedName($node) . PHP_EOL);
+    }
+
+    private function resolveVisibility(ReflectionMethod $reflectionMethod): string
+    {
+        if ($reflectionMethod->isPublic()) {
+            return '+';
+        }
+        if ($reflectionMethod->isProtected()) {
+            return '#';
+        }
+        if ($reflectionMethod->isPrivate()) {
+            return '-';
+        }
+        return '';
     }
 }
