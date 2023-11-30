@@ -3,6 +3,7 @@
 namespace Hirokinoue\AstVisualizer\Visitor;
 
 use Hirokinoue\AstVisualizer\Resolver\NameResolver;
+use Hirokinoue\AstVisualizer\Resolver\ScalarResolver;
 use Hirokinoue\AstVisualizer\Resolver\Resolver;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
@@ -27,6 +28,7 @@ class AstDiagramCreator extends NodeVisitorAbstract
     {
         $this->resolvers = [
             new NameResolver(),
+            new ScalarResolver(),
         ];
     }
 
