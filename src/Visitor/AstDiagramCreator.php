@@ -2,9 +2,9 @@
 
 namespace Hirokinoue\AstVisualizer\Visitor;
 
+use Hirokinoue\AstVisualizer\Resolver\NameResolver;
+use Hirokinoue\AstVisualizer\Resolver\Resolver;
 use PhpParser\Node;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\NodeVisitorAbstract;
 
 class AstDiagramCreator extends NodeVisitorAbstract
@@ -14,12 +14,20 @@ class AstDiagramCreator extends NodeVisitorAbstract
     private int $layer;
 
     /**
+     * @var Resolver[] $resolvers
+     */
+    private array $resolvers;
+
+    /**
      * @var array<string, int>
      */
     private array $drawnNodes = [];
 
     public function __construct()
     {
+        $this->resolvers = [
+            new NameResolver(),
+        ];
     }
 
     public function beforeTraverse(array $nodes)
@@ -63,28 +71,29 @@ class AstDiagramCreator extends NodeVisitorAbstract
 
     private function drawObject(Node $node): void
     {
-        $objName = $this->resolveName($node);
+        $value = $this->value($node);
         fwrite(STDOUT,
             'Object ' . $this->suffixedNodeType($node) . PHP_EOL .
-            ($objName === '' ? '' : ($this->suffixedNodeType($node) . ' : ' . $objName . PHP_EOL))
+            ($value === '' ? '' : ($this->suffixedNodeType($node) . ' : ' . $value . PHP_EOL))
         );
+    }
+
+    private function value(Node $node): string
+    {
+        $value = '';
+        foreach ($this->resolvers as $resolver) {
+            $value = $resolver->resolve($node);
+            if ($value !== '') {
+                break;
+            }
+        }
+        return $value;
     }
 
     private function suffixedNodeType(Node $node): string
     {
         $count = array_key_exists($node->getType(), $this->drawnNodes) ? $this->drawnNodes[$node->getType()] : 1;
         return $node->getType() === 'Root' ? 'Root' : $node->getType() . '__' . $count;
-    }
-
-    private function resolveName(Node $node): string
-    {
-        if ($node instanceof Identifier) {
-            return $node->name;
-        }
-        if ($node instanceof Name) {
-            return $node->getLast();
-        }
-        return '';
     }
 
     private function drawDependency(Node $node): void
