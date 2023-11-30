@@ -3,9 +3,8 @@
 namespace Hirokinoue\AstVisualizer;
 
 use Hirokinoue\AstVisualizer\Traverser\DrawingTraverser;
-use Hirokinoue\AstVisualizer\Visitor\AstDiagramCreator;
-use Hirokinoue\AstVisualizer\Visitor\ClassDiagramCreator;
 use PhpParser\Error;
+use PhpParser\NodeVisitorAbstract;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 
@@ -13,9 +12,18 @@ class AstVisualizer
 {
     private Parser $parser;
 
-    public function __construct()
+    /**
+     * @var NodeVisitorAbstract[]
+     */
+    private array $formats;
+
+    /**
+     * @param NodeVisitorAbstract[] $formats
+     */
+    public function __construct(array $formats)
     {
         $this->parser = (new ParserFactory)->createForNewestSupportedVersion();
+        $this->formats = $formats;
     }
 
     public function analyze(string $code): bool
@@ -27,8 +35,9 @@ class AstVisualizer
                 return false;
             }
             $nodeTraverser = new DrawingTraverser();
-            $nodeTraverser->addVisitor(new AstDiagramCreator());
-            $nodeTraverser->addVisitor(new ClassDiagramCreator());
+            foreach ($this->formats as $diagramFormat) {
+                $nodeTraverser->addVisitor($diagramFormat);
+            }
             $nodeTraverser->traverse($ast);
 
             return true;

@@ -3,13 +3,12 @@
 
 namespace Hirokinoue\AstVisualizer;
 
+use Hirokinoue\AstVisualizer\Visitor\AstDiagramCreator;
+use Hirokinoue\AstVisualizer\Visitor\ClassDiagramCreator;
 use RuntimeException;
 
-if (count($argv) !== 2) {
-    fwrite(STDERR,
-        'Usage: ast-visualizer <target php file>' . PHP_EOL .
-        'Options can be specified using config.php, config.php.dist or config.dist.php.' . PHP_EOL
-    );
+if (count($argv) < 2 || 4 < count($argv)) {
+    fwrite(STDERR, 'Usage: ast-visualizer <target php file> ast|node|ast node' . PHP_EOL);
     exit(1);
 }
 
@@ -38,7 +37,22 @@ if ($code === false) {
     exit(1);
 }
 
-$ok = (new AstVisualizer())->analyze($code);
+$formats = [];
+if (count($argv) > 2) {
+    $argFormats = array_slice($argv, 2);
+    foreach (array_unique($argFormats) as $format) {
+        if ($format === 'ast') {
+            $formats[] = new AstDiagramCreator();
+        } elseif ($format === 'node') {
+            $formats[] = new ClassDiagramCreator();
+        }
+    }
+}
+if (count($formats) === 0) {
+    $formats[] = new AstDiagramCreator();
+}
+
+$ok = (new AstVisualizer($formats))->analyze($code);
 
 if ($ok) {
     fwrite(STDOUT, sprintf('Analysis finished: %s', $targetPhpFile) . PHP_EOL);
