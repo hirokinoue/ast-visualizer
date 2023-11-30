@@ -12,7 +12,7 @@ class VariableResolver implements Resolver
     public function resolve(Node $node): string
     {
         if ($node instanceof Variable && is_string($node->name)) {
-            return '$' . $node->name;
+            return $node->name;
         }
         return '';
     }
