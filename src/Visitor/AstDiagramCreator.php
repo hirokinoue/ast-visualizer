@@ -99,7 +99,7 @@ class AstDiagramCreator extends NodeVisitorAbstract
     private function suffixedNodeType(Node $node): string
     {
         $count = array_key_exists($node->getType(), $this->drawnNodes) ? $this->drawnNodes[$node->getType()] : 1;
-        return $node->getType() === 'Root' ? 'Root' : $node->getType() . '__' . $count;
+        return $node->getType() === 'Root' ? 'Root' : $node->getType() . '_' . $count;
     }
 
     private function drawDependency(Node $node): void
