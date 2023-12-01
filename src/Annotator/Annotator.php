@@ -21,6 +21,7 @@ use PhpParser\Node\Expr\AssignOp\Plus;
 use PhpParser\Node\Expr\AssignOp\Pow;
 use PhpParser\Node\Expr\AssignOp\ShiftLeft;
 use PhpParser\Node\Expr\AssignOp\ShiftRight;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 
 class Annotator
@@ -77,6 +78,9 @@ class Annotator
         }
         if ($node instanceof DeclareItem) {
             return '=';
+        }
+        if ($node instanceof ClassConstFetch) {
+            return '&#58;&#58;';
         }
         return '';
     }
