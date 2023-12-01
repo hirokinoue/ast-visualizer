@@ -6,6 +6,7 @@ namespace Hirokinoue\AstVisualizer\Annotator;
 
 use PhpParser\Node;
 use PhpParser\Node\Const_;
+use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp\BitwiseAnd;
 use PhpParser\Node\Expr\AssignOp\BitwiseOr;
@@ -72,6 +73,9 @@ class Annotator
             return '->';
         }
         if ($node instanceof Const_) {
+            return '=';
+        }
+        if ($node instanceof DeclareItem) {
             return '=';
         }
         return '';
