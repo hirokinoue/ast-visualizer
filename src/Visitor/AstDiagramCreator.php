@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\AstVisualizer\Visitor;
 
+use Hirokinoue\AstVisualizer\Annotator\Annotator;
 use Hirokinoue\AstVisualizer\Resolver\NameResolver;
 use Hirokinoue\AstVisualizer\Resolver\Resolver;
 use Hirokinoue\AstVisualizer\Resolver\ScalarResolver;
@@ -50,6 +51,7 @@ class AstDiagramCreator extends NodeVisitorAbstract
     public function enterNode(Node $node) {
         $this->cache($node);
         $this->drawObject($node);
+        $this->drawAnnotation($node);
         $this->drawDependency($node);
         return $node;
     }
@@ -103,5 +105,13 @@ class AstDiagramCreator extends NodeVisitorAbstract
     private function drawDependency(Node $node): void
     {
         fwrite(STDOUT, $this->suffixedNodeType($this->srcNode) . '-->' . $this->suffixedNodeType($node) . PHP_EOL);
+    }
+
+    private function drawAnnotation(Node $node): void
+    {
+        $annotation = (new Annotator())->annotate($node);
+        if ($annotation !== '') {
+            fwrite(STDOUT, sprintf('note right of %s: %s', $this->suffixedNodeType($node), $annotation) . PHP_EOL);
+        }
     }
 }
