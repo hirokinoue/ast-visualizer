@@ -23,6 +23,7 @@ use PhpParser\Node\Expr\AssignOp\ShiftLeft;
 use PhpParser\Node\Expr\AssignOp\ShiftRight;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 
 class Annotator
 {
@@ -71,6 +72,9 @@ class Annotator
             return '>>=';
         }
         if ($node instanceof MethodCall) {
+            return '->';
+        }
+        if ($node instanceof PropertyFetch) {
             return '->';
         }
         if ($node instanceof Const_) {
