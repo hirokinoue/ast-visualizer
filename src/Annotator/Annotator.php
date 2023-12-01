@@ -6,6 +6,7 @@ namespace Hirokinoue\AstVisualizer\Annotator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\MethodCall;
 
 class Annotator
 {
@@ -13,6 +14,9 @@ class Annotator
     {
         if ($node instanceof Assign) {
             return '=';
+        }
+        if ($node instanceof MethodCall) {
+            return '->';
         }
         return '';
     }
