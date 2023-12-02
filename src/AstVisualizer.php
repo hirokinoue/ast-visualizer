@@ -3,6 +3,7 @@
 namespace Hirokinoue\AstVisualizer;
 
 use Hirokinoue\AstVisualizer\Traverser\DrawingTraverser;
+use Monolog\Logger;
 use PhpParser\Error;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Parser;
@@ -16,18 +17,21 @@ class AstVisualizer
      * @var NodeVisitorAbstract[]
      */
     private array $formats;
+    private Logger $logger;
 
     /**
      * @param NodeVisitorAbstract[] $formats
      */
-    public function __construct(array $formats)
+    public function __construct(array $formats, Logger $logger)
     {
         $this->parser = (new ParserFactory)->createForNewestSupportedVersion();
         $this->formats = $formats;
+        $this->logger = $logger;
     }
 
     public function analyze(string $code): bool
     {
+        $this->logger->info('Start analyzing.');
         try {
             $ast = $this->parser->parse($code);
             if ($ast === null) {

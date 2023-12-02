@@ -7,32 +7,33 @@ use Hirokinoue\AstVisualizer\Resolver\NameResolver;
 use Hirokinoue\AstVisualizer\Resolver\Resolver;
 use Hirokinoue\AstVisualizer\Resolver\ScalarResolver;
 use Hirokinoue\AstVisualizer\Resolver\VariableResolver;
+use Monolog\Logger;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
 class AstDiagramCreator extends NodeVisitorAbstract
 {
     private Node $srcNode;
-
     private int $layer;
-
     /**
      * @var Resolver[] $resolvers
      */
     private array $resolvers;
+    private Logger $logger;
 
     /**
      * @var array<string, int>
      */
     private array $drawnNodes = [];
 
-    public function __construct()
+    public function __construct(Logger $logger)
     {
         $this->resolvers = [
             new NameResolver(),
             new ScalarResolver(),
             new VariableResolver(),
         ];
+        $this->logger = $logger;
     }
 
     public function beforeTraverse(array $nodes)
@@ -49,6 +50,7 @@ class AstDiagramCreator extends NodeVisitorAbstract
     }
 
     public function enterNode(Node $node) {
+        $this->logger->info('Layer: ' . $this->layer . '. ' . $node->getType() . ' is drawn.');
         $this->cache($node);
         $this->drawObject($node);
         $this->drawAnnotation($node);

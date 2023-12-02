@@ -5,6 +5,8 @@ namespace Hirokinoue\AstVisualizer;
 
 use Hirokinoue\AstVisualizer\Visitor\AstDiagramCreator;
 use Hirokinoue\AstVisualizer\Visitor\ClassDiagramCreator;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use RuntimeException;
 
 if (count($argv) < 2 || 4 < count($argv)) {
@@ -25,6 +27,9 @@ if ($currentWorkingDirectory === false) {
 }
 define("WORKING_DIR", $currentWorkingDirectory);
 
+$logger = new Logger('ast visualizer');
+$logger->pushHandler(new StreamHandler(WORKING_DIR .'/ast-visualizer.log'));
+
 $targetPhpFile = $argv[1];
 if (!file_exists($targetPhpFile)) {
     fwrite(STDERR, sprintf('File not found: %s.', $targetPhpFile) . PHP_EOL);
@@ -42,20 +47,20 @@ if (count($argv) > 2) {
     $argFormats = array_slice($argv, 2);
     foreach (array_unique($argFormats) as $format) {
         if ($format === 'ast') {
-            $formats[] = new AstDiagramCreator();
+            $formats[] = new AstDiagramCreator($logger);
         } elseif ($format === 'node') {
             $formats[] = new ClassDiagramCreator();
         }
     }
 }
 if (count($formats) === 0) {
-    $formats[] = new AstDiagramCreator();
+    $formats[] = new AstDiagramCreator($logger);
 }
 
-$ok = (new AstVisualizer($formats))->analyze($code);
+$ok = (new AstVisualizer($formats, $logger))->analyze($code);
 
 if ($ok) {
-    fwrite(STDOUT, sprintf('Analysis finished: %s', $targetPhpFile) . PHP_EOL);
+    $logger->info(sprintf('Analysis finished: %s', $targetPhpFile));
     exit(0);
 }
 
