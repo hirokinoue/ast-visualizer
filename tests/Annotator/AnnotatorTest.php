@@ -21,10 +21,10 @@ final class AnnotatorTest extends TestCase
     }
 
     /**
-     * @dataProvider dataBinaryOpCode
+     * @dataProvider アノテーションを出力したいコード
      * @noinspection NonAsciiCharacters
      */
-    public function testBinaryOpのアノテーションがつけられること(string $code, string $expected)
+    public function testノードの種類に応じたアノテーションがつけられること(string $code, string $expected)
     {
         // given
         $annotator = new Annotator();
@@ -40,7 +40,10 @@ final class AnnotatorTest extends TestCase
         $this->assertEquals(1, $testVisitor->result[$expected]);
     }
 
-    public function dataBinaryOpCode(): array
+    /**
+     * @noinspection NonAsciiCharacters
+     */
+    public function アノテーションを出力したいコード(): array
     {
         return array_map(function (array $testCase): array {
             array_walk($testCase, function (&$value, $key) {
@@ -50,6 +53,78 @@ final class AnnotatorTest extends TestCase
             });
             return $testCase;
         }, [
+            'Assign' => [
+                'code' => '$a = $b',
+                'expected' => '='
+            ],
+            'AssignBitwiseAnd' => [
+                'code' => '$a &= $b',
+                'expected' => '&='
+            ],
+            'AssignBitwiseOr' => [
+                'code' => '$a |= $b',
+                'expected' => '|='
+            ],
+            'AssignBitwiseXor' => [
+                'code' => '$a ^= $b',
+                'expected' => '^='
+            ],
+            'AssignCoalesce' => [
+                'code' => '$a ??= $b',
+                'expected' => '??='
+            ],
+            'AssignConcat' => [
+                'code' => '$a .= $b',
+                'expected' => '.='
+            ],
+            'AssignDiv' => [
+                'code' => '$a /= $b',
+                'expected' => '/='
+            ],
+            'AssignMinus' => [
+                'code' => '$a -= $b',
+                'expected' => '-='
+            ],
+            'AssignMod' => [
+                'code' => '$a %= $b',
+                'expected' => '%='
+            ],
+            'AssignMul' => [
+                'code' => '$a *= $b',
+                'expected' => '*='
+            ],
+            'AssignPlus' => [
+                'code' => '$a += $b',
+                'expected' => '+='
+            ],
+            'AssignPow' => [
+                'code' => '$a **= $b',
+                'expected' => '**='
+            ],
+            'AssignShiftLeft' => [
+                'code' => '$a <<= $b',
+                'expected' => '<<='
+            ],
+            'AssignShiftRight' => [
+                'code' => '$a >>= $b',
+                'expected' => '>>='
+            ],
+            'MethodCall' => [
+                'code' => '$a->b()',
+                'expected' => '->'
+            ],
+            'PropertyFetch' => [
+                'code' => '$a->b',
+                'expected' => '->'
+            ],
+            'Const' => [
+                'code' => 'const FOO = "foo"',
+                'expected' => '='
+            ],
+            'DeclareItem' => [
+                'code' => 'declare(strict_types=1);',
+                'expected' => '='
+            ],
             'BitwiseAnd' => [
                 'code' => '$a & $b',
                 'expected' => '&'
@@ -157,6 +232,10 @@ final class AnnotatorTest extends TestCase
             'Spaceship' => [
                 'code' => '$a <=> $b',
                 'expected' => '<=>'
+            ],
+            'ClassConstFetch' => [
+                'code' => 'FOO::BAR',
+                'expected' => '&#58;&#58;'
             ],
         ]);
     }
