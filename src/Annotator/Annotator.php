@@ -21,6 +21,7 @@ use PhpParser\Node\Expr\AssignOp\Plus;
 use PhpParser\Node\Expr\AssignOp\Pow;
 use PhpParser\Node\Expr\AssignOp\ShiftLeft;
 use PhpParser\Node\Expr\AssignOp\ShiftRight;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -82,6 +83,9 @@ class Annotator
         }
         if ($node instanceof DeclareItem) {
             return '=';
+        }
+        if ($node instanceof BinaryOp) {
+            return $node->getOperatorSigil();
         }
         if ($node instanceof ClassConstFetch) {
             return '&#58;&#58;';

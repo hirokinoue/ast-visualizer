@@ -4,7 +4,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Hirokinoue\\AstVisualizer\\": "src/"
+            "Hirokinoue\\AstVisualizer\\": "src/",
+            "Hirokinoue\\AstVisualizer\\Tests\\": "tests/"
         }
     },
     "require": {
