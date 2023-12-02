@@ -6,7 +6,7 @@ use Hirokinoue\AstVisualizer\Annotator\Annotator;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class TestVisitor extends NodeVisitorAbstract
+class AnnotatorTestVisitor extends NodeVisitorAbstract
 {
     private Annotator $annotator;
     /** @var array<string, int> */

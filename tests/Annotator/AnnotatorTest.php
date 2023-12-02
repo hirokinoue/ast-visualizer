@@ -3,7 +3,7 @@
 namespace Hirokinoue\AstVisualizer\Tests\Annotator;
 
 use Hirokinoue\AstVisualizer\Annotator\Annotator;
-use Hirokinoue\AstVisualizer\Tests\TestVisitor;
+use Hirokinoue\AstVisualizer\Tests\AnnotatorTestVisitor;
 use PHPUnit\Framework\TestCase;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -28,7 +28,7 @@ final class AnnotatorTest extends TestCase
     {
         // given
         $annotator = new Annotator();
-        $testVisitor = new TestVisitor($annotator);
+        $testVisitor = new AnnotatorTestVisitor($annotator);
         $ast = $this->parser->parse($code);
         $this->traverser->addVisitor($testVisitor);
 
