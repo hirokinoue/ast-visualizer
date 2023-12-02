@@ -86,10 +86,10 @@ final class ResolverTest extends TestCase
                 'code' => '1',
                 'expected' => '1'
             ],
-            'InterpolatedStringノード' => [
+            'InterpolatedStringPartノード' => [
                 'resolver' => new ScalarResolver(),
-                'code' => '"foo"',
-                'expected' => 'foo'
+                'code' => '"{$foo}bar"',
+                'expected' => 'bar'
             ],
             'String_ノード' => [
                 'resolver' => new ScalarResolver(),

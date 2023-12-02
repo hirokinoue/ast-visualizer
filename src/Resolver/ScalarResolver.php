@@ -9,7 +9,7 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Scalar\String_;
 
 class ScalarResolver implements Resolver
@@ -20,7 +20,7 @@ class ScalarResolver implements Resolver
             $node instanceof Float_ ||
             $node instanceof LNumber ||
             $node instanceof Int_ ||
-            $node instanceof InterpolatedString ||
+            $node instanceof InterpolatedStringPart ||
             $node instanceof String_
         ) {
             return (string)$node->value;
