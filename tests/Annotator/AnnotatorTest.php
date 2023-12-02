@@ -36,7 +36,7 @@ final class AnnotatorTest extends TestCase
         $this->traverser->traverse($ast);
 
         // then
-        $this->assertArrayHasKey($expected, $testVisitor->result);
+        $this->assertArrayHasKey($expected, $testVisitor->result, 'actual: ' . print_r($testVisitor->result, true));
         $this->assertEquals(1, $testVisitor->result[$expected]);
     }
 
