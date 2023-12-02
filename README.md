@@ -30,7 +30,7 @@ XDEBUG_MODE=off vendor/bin/phpstan analyze -l 9 src/
 ```
 
 ### ベースライン生成
-```angular2html
+```
 XDEBUG_MODE=off vendor/bin/phpstan analyze -l 9 src/ --generate-baseline
 ```
 
