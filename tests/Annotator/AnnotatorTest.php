@@ -21,7 +21,7 @@ final class AnnotatorTest extends TestCase
     }
 
     /**
-     * @dataProvider アノテーションを出力したいコード
+     * @dataProvider dataノードの種類に応じたアノテーションがつけられること
      * @noinspection NonAsciiCharacters
      */
     public function testノードの種類に応じたアノテーションがつけられること(string $code, string $expected)
@@ -43,7 +43,7 @@ final class AnnotatorTest extends TestCase
     /**
      * @noinspection NonAsciiCharacters
      */
-    public function アノテーションを出力したいコード(): array
+    public function dataノードの種類に応じたアノテーションがつけられること(): array
     {
         return array_map(function (array $testCase): array {
             array_walk($testCase, function (&$value, $key) {
