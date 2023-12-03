@@ -9,7 +9,7 @@
         }
     },
     "require": {
-        "php": "^8.2",
+        "php": "^7.4|^8.0",
         "nikic/php-parser": "^5.0@dev",
         "monolog/monolog": "^3.5"
     },
