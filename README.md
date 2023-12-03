@@ -7,34 +7,12 @@ ASTを図示するツール
 make run
 ```
 
-## イメージ、コンテナの削除
+## コンテナ、イメージの削除
 ```
 make clean
 ```
 
 ## 解析実行
 ```
-XDEBUG_MODE=off php bin/ast-visualizer path/to/Foo.php
-```
-
-## デバッグ
-Xdebugを有効化して解析を実行する。
-```
-php bin/ast-visualizer path/to/Foo.php
-```
-
-## PHPStan
-### 解析実行
-```
-XDEBUG_MODE=off vendor/bin/phpstan analyze -l 9 src/
-```
-
-### ベースライン生成
-```
-XDEBUG_MODE=off vendor/bin/phpstan analyze -l 9 src/ --generate-baseline
-```
-
-## PHPUnit
-```
-XDEBUG_MODE=off vendor/bin/phpunit --filter="FooTest"
+XDEBUG_MODE=off composer ast-visualizer path/to/Foo.php
 ```

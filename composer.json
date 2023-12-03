@@ -19,5 +19,16 @@
     },
     "bin": [
         "bin/ast-visualizer"
-    ]
+    ],
+    "scripts": {
+        "ast-visualizer": "./bin/ast-visualizer",
+        "phpunit": "./vendor/bin/phpunit",
+        "phpstan": "./vendor/bin/phpstan analyze -l 9 src/",
+        "phpstan-set-baseline": "./vendor/bin/phpstan analyze -l 9 src/ --generate-baseline"
+    },
+    "scripts-descriptions": {
+        "phpunit": "Runs unit tests.",
+        "phpstan": "Runs static analysis.",
+        "phpstan-set-baseline": "Sets baseline for phpstan."
+    }
 }
