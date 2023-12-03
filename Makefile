@@ -35,5 +35,6 @@ endif
 ifneq ($(image_exists),)
 	docker rmi $(image_name)
 endif
+	sudo rm -fr vendor
 
 .DEFAULT_GOAL := run
