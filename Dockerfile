@@ -1,4 +1,4 @@
-FROM php:8.2-bullseye
+FROM php:8.2-cli-bullseye
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
