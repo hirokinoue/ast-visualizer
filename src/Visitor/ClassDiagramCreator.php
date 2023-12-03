@@ -6,6 +6,7 @@ use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionProperty;
 
 class ClassDiagramCreator extends NodeVisitorAbstract
 {
@@ -51,13 +52,18 @@ class ClassDiagramCreator extends NodeVisitorAbstract
             return;
         }
         $reflectionClass = new ReflectionClass($node);
+        $reflectionProperties = $reflectionClass->getProperties();
         $reflectionMethods = $reflectionClass->getMethods();
 
         fwrite(STDOUT,
             $this->declareType($reflectionClass) . ' ' . $node->getType() . PHP_EOL .
             '{' . PHP_EOL .
+            implode(PHP_EOL , array_map(fn (ReflectionProperty $reflectionProperty) =>
+                    $this->resolveVisibilityOfProperty($reflectionProperty) . $reflectionProperty->getName() . ': ' . $reflectionProperty->getType()
+                    , $reflectionProperties)
+            ) . PHP_EOL .
             implode(PHP_EOL , array_map(fn (ReflectionMethod $reflectionMethod) =>
-                    $this->resolveVisibility($reflectionMethod) . $reflectionMethod->getName() . '()' . ': ' . $reflectionMethod->getReturnType()
+                    $this->resolveVisibilityOfMethod($reflectionMethod) . $reflectionMethod->getName() . '()' . ': ' . $reflectionMethod->getReturnType()
                     , $reflectionMethods)
             ) . PHP_EOL .
             '}' . PHP_EOL);
@@ -80,7 +86,7 @@ class ClassDiagramCreator extends NodeVisitorAbstract
         return 'class';
     }
 
-    private function resolveVisibility(ReflectionMethod $reflectionMethod): string
+    private function resolveVisibilityOfMethod(ReflectionMethod $reflectionMethod): string
     {
         if ($reflectionMethod->isPublic()) {
             return '+';
@@ -94,6 +100,19 @@ class ClassDiagramCreator extends NodeVisitorAbstract
         return '';
     }
 
+    private function resolveVisibilityOfProperty(ReflectionProperty $reflectionProperty): string
+    {
+        if ($reflectionProperty->isPublic()) {
+            return '+';
+        }
+        if ($reflectionProperty->isProtected()) {
+            return '#';
+        }
+        if ($reflectionProperty->isPrivate()) {
+            return '-';
+        }
+        return '';
+    }
 //    private function annotation(Node $node): string
 //    {
 //        $name = $this->resolveName($node);
