@@ -1,0 +1,17 @@
+name: "Static analysis"
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  phpstan:
+    uses: ./.github/workflows/setup-environment.yml
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Run PHPStan
+        run: composer phpstan
