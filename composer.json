@@ -30,5 +30,10 @@
         "phpunit": "Runs unit tests.",
         "phpstan": "Runs static analysis.",
         "phpstan-set-baseline": "Sets baseline for phpstan."
+    },
+    "config": {
+        "platform": {
+            "php": "8.1"
+        }
     }
 }
