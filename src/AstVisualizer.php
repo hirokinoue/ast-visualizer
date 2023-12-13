@@ -9,7 +9,7 @@ use PhpParser\NodeVisitorAbstract;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 
-class AstVisualizer
+final class AstVisualizer
 {
     private Parser $parser;
 

@@ -2,7 +2,7 @@
 
 namespace Hirokinoue\AstVisualizer;
 
-class Layer
+final class Layer
 {
     public int $value;
 

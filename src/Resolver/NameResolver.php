@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 
-class NameResolver implements Resolver
+final class NameResolver implements Resolver
 {
     public function resolve(Node $node): string
     {

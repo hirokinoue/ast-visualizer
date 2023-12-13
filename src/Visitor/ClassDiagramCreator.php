@@ -8,7 +8,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 
-class ClassDiagramCreator extends NodeVisitorAbstract
+final class ClassDiagramCreator extends NodeVisitorAbstract
 {
     /**
      * @var array<string, int>
