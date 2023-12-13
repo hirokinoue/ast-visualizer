@@ -6,7 +6,7 @@ use Hirokinoue\AstVisualizer\Resolver\Resolver;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class ResolverTestVisitor extends NodeVisitorAbstract
+final class ResolverTestVisitor extends NodeVisitorAbstract
 {
     private Resolver $resolver;
     /** @var array<string, int> */

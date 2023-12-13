@@ -12,7 +12,7 @@ use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Scalar\String_;
 
-class ScalarResolver implements Resolver
+final class ScalarResolver implements Resolver
 {
     public function resolve(Node $node): string
     {

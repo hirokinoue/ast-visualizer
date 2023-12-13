@@ -4,7 +4,7 @@ namespace Hirokinoue\AstVisualizer;
 
 use PhpParser\Node\Stmt;
 
-class RootNode extends Stmt
+final class RootNode extends Stmt
 {
     public function getSubNodeNames(): array {
         return [];

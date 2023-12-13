@@ -26,7 +26,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 
-class Annotator
+final class Annotator
 {
     public function annotate(Node $node): string
     {

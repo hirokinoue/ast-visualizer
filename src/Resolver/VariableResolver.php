@@ -7,7 +7,7 @@ namespace Hirokinoue\AstVisualizer\Resolver;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 
-class VariableResolver implements Resolver
+final class VariableResolver implements Resolver
 {
     public function resolve(Node $node): string
     {

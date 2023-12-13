@@ -8,12 +8,12 @@ use PhpParser\Node;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor;
 
-class DrawingTraverser implements NodeTraverserInterface {
+final class DrawingTraverser implements NodeTraverserInterface {
     /** @var list<NodeVisitor> $visitors */
-    protected array $visitors = [];
+    private array $visitors = [];
 
     /** @var bool Whether traversal should be stopped */
-    protected bool $stopTraversal;
+    private bool $stopTraversal;
 
     /**
      * Create a traverser with the given visitors.
@@ -76,7 +76,7 @@ class DrawingTraverser implements NodeTraverserInterface {
      *
      * @param Node $node Node to traverse.
      */
-    protected function traverseNode(Node $node, Layer $layer): void {
+    private function traverseNode(Node $node, Layer $layer): void {
         foreach ($node->getSubNodeNames() as $name) {
             $subNode = $node->$name;
 
@@ -164,7 +164,7 @@ class DrawingTraverser implements NodeTraverserInterface {
      *
      * @return list<Node> Result of traversal (may be original array or changed one)
      */
-    protected function traverseArray(array $nodes, Node $srcNode, Layer $layer): array {
+    private function traverseArray(array $nodes, Node $srcNode, Layer $layer): array {
         $doNodes = [];
 
         foreach ($nodes as $i => $node) {

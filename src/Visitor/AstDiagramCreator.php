@@ -11,7 +11,7 @@ use Monolog\Logger;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class AstDiagramCreator extends NodeVisitorAbstract
+final class AstDiagramCreator extends NodeVisitorAbstract
 {
     private Node $srcNode;
     private int $layer;
