@@ -1,0 +1,9 @@
+{
+  "alias": "ast-visualizer.phar",
+  "chmod": "0755",
+  "compactors": [],
+  "directories": ["bin", "src", "vendor"],
+  "main": "bin/ast-visualizer",
+  "output": "ast-visualizer.phar",
+  "stub": true
+}
