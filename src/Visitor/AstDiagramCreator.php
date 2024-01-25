@@ -13,8 +13,6 @@ use PhpParser\NodeVisitorAbstract;
 
 final class AstDiagramCreator extends NodeVisitorAbstract
 {
-    private Node $srcNode;
-    private int $layer;
     /**
      * @var Resolver[] $resolvers
      */
@@ -45,21 +43,11 @@ final class AstDiagramCreator extends NodeVisitorAbstract
     }
 
     public function enterNode(Node $node) {
-        $this->logger->info('Layer: ' . $this->layer . '. ' . $node->getType() . ' is drawn.');
+        $this->logger->info('Layer: ' . $node->getAttribute('layer', '') . '. ' . $node->getType() . ' is drawn.');
         $this->drawObject($node);
         $this->drawAnnotation($node);
         $this->drawDependency($node);
         return $node;
-    }
-
-    public function setLayer(int $layer): void
-    {
-        $this->layer = $layer;
-    }
-
-    public function setSrcNode(Node $srcNode): void
-    {
-        $this->srcNode = $srcNode;
     }
 
     private function drawObject(Node $node): void

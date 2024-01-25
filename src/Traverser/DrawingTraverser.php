@@ -92,12 +92,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
                 $visitorIndex = -1;
 
                 foreach ($this->visitors as $visitorIndex => $visitor) {
-                    if (method_exists($visitor, 'setLayer')) {
-                        $visitor->setLayer($layer->value);
-                    }
-                    if (method_exists($visitor, 'setSrcNode')) {
-                        $visitor->setSrcNode($node);
-                    }
+                    $subNode->setAttribute('layer', $layer->value);
                     $return = $visitor->enterNode($subNode);
                     DrawnNodes::add($subNode);
                     if (null !== $return) {
@@ -177,12 +172,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
                 $visitorIndex = -1;
 
                 foreach ($this->visitors as $visitorIndex => $visitor) {
-                    if (method_exists($visitor, 'setLayer')) {
-                        $visitor->setLayer($layer->value);
-                    }
-                    if (method_exists($visitor, 'setSrcNode')) {
-                        $visitor->setSrcNode($srcNode);
-                    }
+                    $node->setAttribute('layer', $layer->value);
                     $return = $visitor->enterNode($node);
                     DrawnNodes::add($node);
                     if (null !== $return) {
