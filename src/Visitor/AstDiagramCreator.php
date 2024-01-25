@@ -21,11 +21,6 @@ final class AstDiagramCreator extends NodeVisitorAbstract
     private array $resolvers;
     private Logger $logger;
 
-    /**
-     * @var array<string, int>
-     */
-    private array $drawnNodes = [];
-
     public function __construct(Logger $logger)
     {
         $this->resolvers = [
@@ -51,7 +46,6 @@ final class AstDiagramCreator extends NodeVisitorAbstract
 
     public function enterNode(Node $node) {
         $this->logger->info('Layer: ' . $this->layer . '. ' . $node->getType() . ' is drawn.');
-        $this->cache($node);
         $this->drawObject($node);
         $this->drawAnnotation($node);
         $this->drawDependency($node);
@@ -68,21 +62,13 @@ final class AstDiagramCreator extends NodeVisitorAbstract
         $this->srcNode = $srcNode;
     }
 
-    private function cache(Node $node): void
-    {
-        if (array_key_exists($node->getType(), $this->drawnNodes)) {
-            $this->drawnNodes[$node->getType()]++;
-        } else {
-            $this->drawnNodes[$node->getType()] = 1;
-        }
-    }
-
     private function drawObject(Node $node): void
     {
         $value = $this->value($node);
+        $object = $this->appendSuffixToNode($node, $node->getAttribute('suffix', ''));
         fwrite(STDOUT,
-            'Object ' . $this->suffixedNodeType($node) . PHP_EOL .
-            (preg_replace('/[ 　]/', '', $value) === '' ? '' : $this->suffixedNodeType($node) . ' : ' . $value . PHP_EOL)
+            'Object ' . $object . PHP_EOL .
+            (preg_replace('/[ 　]/', '', $value) === '' ? '' : $object . ' : ' . $value . PHP_EOL)
         );
     }
 
@@ -98,22 +84,42 @@ final class AstDiagramCreator extends NodeVisitorAbstract
         return $value;
     }
 
-    private function suffixedNodeType(Node $node): string
+    private function appendSuffixToNode(Node $node, string $suffix = ''): string
     {
-        $count = array_key_exists($node->getType(), $this->drawnNodes) ? $this->drawnNodes[$node->getType()] : 1;
-        return $node->getType() === 'Root' ? 'Root' : $node->getType() . '_' . $count;
+        return $this->appendSuffixToNodeType($node->getType(), $suffix);
+    }
+
+    private function appendSuffixToNodeType(string $nodeType, string $suffix = ''): string
+    {
+        if ($nodeType === 'Root' || $suffix === '' || $suffix === '0') {
+            return $nodeType;
+        }
+        return $nodeType . '_' . $suffix;
     }
 
     private function drawDependency(Node $node): void
     {
-        fwrite(STDOUT, $this->suffixedNodeType($this->srcNode) . '-->' . $this->suffixedNodeType($node) . PHP_EOL);
+        $parentNodeType = $node->getAttribute('parentNodeType', '');
+        $parentSuffix = $node->getAttribute('parentSuffix', '');
+        $suffix = $node->getAttribute('suffix', '');
+        fwrite(STDOUT,
+            $this->appendSuffixToNodeType($parentNodeType, $parentSuffix) .
+            '-->' .
+            $this->appendSuffixToNode($node, $suffix) .
+            PHP_EOL
+        );
     }
 
     private function drawAnnotation(Node $node): void
     {
         $annotation = (new Annotator())->annotate($node);
         if ($annotation !== '') {
-            fwrite(STDOUT, sprintf('note right of %s: %s', $this->suffixedNodeType($node), $annotation) . PHP_EOL);
+            fwrite(STDOUT,
+                sprintf('note right of %s: %s',
+                    $this->appendSuffixToNode($node, $node->getAttribute('suffix', '')),
+                    $annotation
+                ) . PHP_EOL
+            );
         }
     }
 }

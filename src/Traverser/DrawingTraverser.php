@@ -2,6 +2,7 @@
 
 namespace Hirokinoue\AstVisualizer\Traverser;
 
+use Hirokinoue\AstVisualizer\DrawnNodes;
 use Hirokinoue\AstVisualizer\Layer;
 use Hirokinoue\AstVisualizer\RootNode;
 use PhpParser\Node;
@@ -86,6 +87,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
                     break;
                 }
             } elseif ($subNode instanceof Node) {
+                $this->setObjectNameSourceToAttribute($node, $subNode);
                 $traverseChildren = true;
                 $visitorIndex = -1;
 
@@ -97,6 +99,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
                         $visitor->setSrcNode($node);
                     }
                     $return = $visitor->enterNode($subNode);
+                    DrawnNodes::add($subNode);
                     if (null !== $return) {
                         if ($return instanceof Node) {
                             $this->ensureReplacementReasonable($subNode, $return);
@@ -169,6 +172,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
 
         foreach ($nodes as $i => $node) {
             if ($node instanceof Node) {
+                $this->setObjectNameSourceToAttribute($srcNode, $node);
                 $traverseChildren = true;
                 $visitorIndex = -1;
 
@@ -180,6 +184,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
                         $visitor->setSrcNode($srcNode);
                     }
                     $return = $visitor->enterNode($node);
+                    DrawnNodes::add($node);
                     if (null !== $return) {
                         if ($return instanceof Node) {
                             $this->ensureReplacementReasonable($node, $return);
@@ -272,5 +277,11 @@ final class DrawingTraverser implements NodeTraverserInterface {
                 "with statement ({$new->getType()})"
             );
         }
+    }
+
+    private function setObjectNameSourceToAttribute(Node $parent, Node $child): void {
+        $child->setAttribute('parentNodeType', $parent->getType());
+        $child->setAttribute('parentSuffix', $parent->getAttribute('suffix', ''));
+        $child->setAttribute('suffix', DrawnNodes::numberOfOccurrences($child));
     }
 }
