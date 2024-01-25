@@ -10,6 +10,7 @@ use Hirokinoue\AstVisualizer\Resolver\VariableResolver;
 use Monolog\Logger;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
+use InvalidArgumentException;
 
 final class AstDiagramCreator extends NodeVisitorAbstract
 {
@@ -53,7 +54,7 @@ final class AstDiagramCreator extends NodeVisitorAbstract
     private function drawObject(Node $node): void
     {
         $value = $this->value($node);
-        $object = $this->appendSuffixToNode($node, $node->getAttribute('suffix', ''));
+        $object = $this->appendSuffixToNode($node, $this->getAttributeAsString($node, 'suffix'));
         fwrite(STDOUT,
             'Object ' . $object . PHP_EOL .
             (preg_replace('/[ 　]/', '', $value) === '' ? '' : $object . ' : ' . $value . PHP_EOL)
@@ -87,9 +88,9 @@ final class AstDiagramCreator extends NodeVisitorAbstract
 
     private function drawDependency(Node $node): void
     {
-        $parentNodeType = $node->getAttribute('parentNodeType', '');
-        $parentSuffix = $node->getAttribute('parentSuffix', '');
-        $suffix = $node->getAttribute('suffix', '');
+        $parentNodeType = $this->getAttributeAsString($node, 'parentNodeType');
+        $parentSuffix = $this->getAttributeAsString($node, 'parentSuffix');
+        $suffix = $this->getAttributeAsString($node, 'suffix');
         fwrite(STDOUT,
             $this->appendSuffixToNodeType($parentNodeType, $parentSuffix) .
             '-->' .
@@ -104,10 +105,19 @@ final class AstDiagramCreator extends NodeVisitorAbstract
         if ($annotation !== '') {
             fwrite(STDOUT,
                 sprintf('note right of %s: %s',
-                    $this->appendSuffixToNode($node, $node->getAttribute('suffix', '')),
+                    $this->appendSuffixToNode($node, $this->getAttributeAsString($node, 'suffix')),
                     $annotation
                 ) . PHP_EOL
             );
         }
+    }
+
+    private function getAttributeAsString(Node $node, string $key): string
+    {
+        $value = $node->getAttribute($key, '');
+        if (!is_string($value)) {
+            throw new InvalidArgumentException('Value of ' . $key . ' attribute must be string.');
+        }
+        return $value;
     }
 }
