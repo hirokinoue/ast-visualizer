@@ -82,7 +82,7 @@ final class AstDiagramCreator extends NodeVisitorAbstract
         $value = $this->value($node);
         fwrite(STDOUT,
             'Object ' . $this->suffixedNodeType($node) . PHP_EOL .
-            ($value === '' ? '' : ($this->suffixedNodeType($node) . ' : ' . $value . PHP_EOL))
+            (preg_replace('/[ 　]/', '', $value) === '' ? '' : $this->suffixedNodeType($node) . ' : ' . $value . PHP_EOL)
         );
     }
 
