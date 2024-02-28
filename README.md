@@ -4,15 +4,31 @@
 ## Overview
 AST Visualizer is a tool that visualizes ast created by PHP-Parser.
 
+# Installation
+1. Edit composer.json
+    ```
+    {
+      "repositories": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/hirokinoue/ast-visualizer"
+        }
+      ]
+    }
+    ```
+
+2. Install using composer  
+   `$ composer require --dev hirokinoue/ast-visualizer`
+
 # Usage
 - ast mode
     ```
-    ast-visualizer.phar path/to/Foo.php ast
+    ./vendor/bin/ast-visualizer path/to/Foo.php ast
     ```
 
 - node mode
     ```
-    ast-visualizer.phar path/to/Foo.php node
+    ./vendor/bin/ast-visualizer path/to/Foo.php node
     ```
 
 Both modes can be specified at the same time.  
@@ -31,24 +47,3 @@ This code is converted to the following diagram.
 
 - node mode  
 ![node mode sample](./node_mode_sample.png)
-
-# Development
-## Run docker
-```
-make run
-```
-
-## Clear docker
-```
-make clean
-```
-
-## Execute AST Visualizer
-```
-XDEBUG_MODE=off composer ast-visualizer path/to/Foo.php
-```
-
-## Build phar file
-```
-vendor/bin/box compile 
-```
