@@ -9,8 +9,7 @@
         }
     },
     "require": {
-        "php": "^7.4|^8.0",
-        "nikic/php-parser": "^5.0@dev",
+        "nikic/php-parser": "^v5.0",
         "monolog/monolog": "^3.5"
     },
     "require-dev": {
@@ -35,7 +34,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.1"
+            "php": "8.2.13"
         },
         "allow-plugins": {
             "bamarni/composer-bin-plugin": true
