@@ -46,7 +46,7 @@ final class AstVisualizer
 
             return true;
         } catch (Error $error) {
-            fwrite(STDERR, 'Parse error: {$error->getMessage()}' . PHP_EOL);
+            fwrite(STDERR, 'Parse error:' . $error->getMessage() . PHP_EOL);
             return false;
         }
     }
