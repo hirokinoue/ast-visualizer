@@ -10,13 +10,20 @@ container_exists := $(shell docker ps -a --filter "name=$(container_name)" --for
 .PHONY: build
 build:
 ifneq ($(image_exists),$(image_name))
-	docker build -t $(image_name) $(host_directory)
+	docker build -t $(image_name) \
+		--build-arg UID=$(UID) \
+		--build-arg GID=$(GID) \
+		$(host_directory)
 endif
 
 .PHONY: composer-install
 composer-install:
 ifeq ($(wildcard $(host_directory)/vendor),)
-	docker run --rm -v "$(host_directory):$(container_directory)" "$(image_name)" composer install
+	docker run --rm \
+		--user $(UID):$(GID) \
+		-v "$(host_directory):$(container_directory)" \
+		"$(image_name)" \
+		composer install
 endif
 
 .PHONY: run
@@ -24,7 +31,11 @@ run: build composer-install
 ifeq ($(container_exists),$(container_name))
 	docker start -i -a "$(container_name)"
 else
-	docker run -it --name "$(container_name)" -v "$(host_directory):$(container_directory)" "$(image_name)"
+	docker run -it \
+		--user $(UID):$(GID) \
+		--name "$(container_name)" \
+		-v "$(host_directory):$(container_directory)" \
+		"$(image_name)"
 endif
 
 .PHONY: clean
@@ -35,6 +46,6 @@ endif
 ifneq ($(image_exists),)
 	docker rmi $(image_name)
 endif
-	sudo rm -fr vendor
+	rm -fr vendor
 
 .DEFAULT_GOAL := run
