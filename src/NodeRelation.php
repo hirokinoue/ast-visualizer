@@ -21,7 +21,20 @@ final class NodeRelation
     public function __construct(Node $node)
     {
         $this->node = $node;
-        $this->subNodes = array_map(fn (string $name) => $node->$name, $node->getSubNodeNames());
+        $subNodes = [];
+        foreach ($node->getSubNodeNames() as $name) {
+            $subNode = $node->$name;
+            if ($subNode instanceof Node) {
+                $subNodes[] = $subNode;
+            } elseif (is_array($subNode)) {
+                foreach ($subNode as $item) {
+                    if ($item instanceof Node) {
+                        $subNodes[] = $item;
+                    }
+                }
+            }
+        }
+        $this->subNodes = $subNodes;
     }
 
     public function nodeId(): int
@@ -29,13 +42,16 @@ final class NodeRelation
         return spl_object_id($this->node);
     }
 
-    public function addDrwaSubNode(Node $node): void
+    public function addDrawnSubNode(Node $node): void
     {
         $this->drawnSubNodes[] = $node;
     }
 
     public function isLast(): bool
     {
-        return count($this->drawnSubNodes) === count($this->subNodes);
+        if (empty($this->subNodes)) {
+            return true;
+        }
+        return count($this->drawnSubNodes) >= count($this->subNodes);
     }
 }

@@ -60,7 +60,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
             }
         }
 
-        $nodes = $this->traverseArray($nodes, new RootNode(), (new Layer(1)));
+        $nodes = $this->traverseArray($nodes, new RootNode(), (new Layer(0)));
 
         for ($i = \count($this->visitors) - 1; $i >= 0; --$i) {
             $visitor = $this->visitors[$i];
@@ -270,6 +270,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
     }
 
     private function setObjectNameSourceToAttribute(Node $parent, Node $child): void {
+        $child->setAttribute('parentNodeId', spl_object_id($parent));
         $child->setAttribute('parentNodeType', $parent->getType());
         $child->setAttribute('parentSuffix', $parent->getAttribute('suffix', ''));
         $child->setAttribute('suffix', DrawnNodes::numberOfOccurrences($child));
