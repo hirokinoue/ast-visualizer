@@ -8,14 +8,10 @@ final class NodeRelation
 {
     private Node $node;
 
-    /**
-     * @param Node[]
-     */
+    /** @var array<Node> */
     private array $subNodes = [];
 
-    /**
-     * @param string[]
-     */
+    /** @var array<Node> */
     private array $drawnSubNodes = [];
 
     public function __construct(Node $node)

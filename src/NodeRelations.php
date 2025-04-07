@@ -14,8 +14,11 @@ final class NodeRelations
         self::$nodeRelations[$nodeRelation->nodeId()] = $nodeRelation;
     }
 
-    public static function get(int $nodeId): ?NodeRelation
+    public static function get(?int $nodeId): ?NodeRelation
     {
+        if ($nodeId === null) {
+            return null;
+        }
         return self::$nodeRelations[$nodeId] ?? null;
     }
 }

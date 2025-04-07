@@ -3,4 +3,5 @@ includes:
 
 parameters:
   treatPhpDocTypesAsCertain: false
-  checkGenericClassInNonGenericObjectType: false
+  ignoreErrors:
+    - identifier: missingType.generics
