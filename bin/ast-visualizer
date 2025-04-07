@@ -5,12 +5,15 @@ namespace Hirokinoue\AstVisualizer;
 
 use Hirokinoue\AstVisualizer\Visitor\AstDiagramCreator;
 use Hirokinoue\AstVisualizer\Visitor\ClassDiagramCreator;
+use Hirokinoue\AstVisualizer\Visitor\SimpleTextDiagramCreator;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use RuntimeException;
 
-if (count($argv) < 2 || 4 < count($argv)) {
-    fwrite(STDERR, 'Usage: ast-visualizer <target php file> ast|node|ast node' . PHP_EOL);
+if (count($argv) < 2 || 5 < count($argv)) {
+    fwrite(STDERR, 'Usage: ast-visualizer <target php file> ast|node|text' . PHP_EOL .
+        'Diagram format can be specified by space separated values such as "ast node text".'
+    );
     exit(1);
 }
 
@@ -50,6 +53,8 @@ if (count($argv) > 2) {
             $formats[] = new AstDiagramCreator($logger);
         } elseif ($format === 'node') {
             $formats[] = new ClassDiagramCreator();
+        } elseif ($format === 'text') {
+            $formats[] = new SimpleTextDiagramCreator($logger);
         }
     }
 }

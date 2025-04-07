@@ -60,7 +60,7 @@ final class DrawingTraverser implements NodeTraverserInterface {
             }
         }
 
-        $nodes = $this->traverseArray($nodes, new RootNode(), (new Layer(0)));
+        $nodes = $this->traverseArray($nodes, new RootNode(), (new Layer(1)));
 
         for ($i = \count($this->visitors) - 1; $i >= 0; --$i) {
             $visitor = $this->visitors[$i];
