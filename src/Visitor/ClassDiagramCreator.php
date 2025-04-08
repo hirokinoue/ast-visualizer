@@ -31,10 +31,11 @@ final class ClassDiagramCreator extends NodeVisitorAbstract
         return $nodes;
     }
 
-    public function enterNode(Node $node) {
+    public function enterNode(Node $node): null
+    {
         $this->cache($node);
         $this->drawClass($node);
-        return $node;
+        return null;
     }
 
     private function cache(Node $node): void

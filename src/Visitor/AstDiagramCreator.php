@@ -43,12 +43,13 @@ final class AstDiagramCreator extends NodeVisitorAbstract
         return $nodes;
     }
 
-    public function enterNode(Node $node) {
+    public function enterNode(Node $node): null
+    {
         $this->logger->info('Layer: ' . $node->getAttribute('layer', '') . '. ' . $node->getType() . ' is drawn.');
         $this->drawObject($node);
         $this->drawAnnotation($node);
         $this->drawDependency($node);
-        return $node;
+        return null;
     }
 
     private function drawObject(Node $node): void
